@@ -18,6 +18,37 @@ describe("POST /auth/register", () => {
             // Assert
             expect(response.statusCode).toBe(201);
         });
+        it("should return valid json response", async () => {
+            // Arrange
+            const userData = {
+                firstName: "Nur",
+                lastName: "Adnan",
+                email: "nuradnan@gmail.com",
+                password: "secret",
+            };
+            // Act
+            const response = await request(app)
+                .post("/auth/register")
+                .send(userData);
+            // Assert
+            expect(
+                (response.headers as Record<string, string>)["content-type"],
+            ).toEqual(expect.stringContaining("json"));
+        });
+        it("should persist the user in the database", async () => {
+            // Arrange
+            const userData = {
+                firstName: "Nur",
+                lastName: "Adnan",
+                email: "nuradnan@gmail.com",
+                password: "secret",
+            };
+            // Act
+            const response = await request(app)
+                .post("/auth/register")
+                .send(userData);
+            // Assert - here we use typeorm, ORM means object-relational mapping
+        });
     });
     describe("Fields are missing", () => {});
 });
