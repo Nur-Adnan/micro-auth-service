@@ -30,6 +30,7 @@ export class AuthController {
         }
 
         const { firstName, lastName, email, password } = req.body;
+
         this.logger.debug("New request to register a user", {
             firstName,
             lastName,
