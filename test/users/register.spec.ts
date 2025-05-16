@@ -38,6 +38,7 @@ describe("POST /auth/register", () => {
             // Assert
             expect(response.statusCode).toBe(201);
         });
+
         it("should return valid json response", async () => {
             // Arrange
             const userData = {
@@ -55,6 +56,7 @@ describe("POST /auth/register", () => {
                 (response.headers as Record<string, string>)["content-type"],
             ).toEqual(expect.stringContaining("json"));
         });
+
         it("should persist the user in the database", async () => {
             // Arrange
             const userData = {
@@ -75,6 +77,7 @@ describe("POST /auth/register", () => {
             expect(users[0].lastName).toBe(userData.lastName);
             expect(users[0].email).toBe(userData.email);
         });
+
         it("should return an id of the created user", async () => {
             // Arrange
             const userData = {
@@ -155,5 +158,26 @@ describe("POST /auth/register", () => {
             expect(users).toHaveLength(1);
         });
     });
-    describe("Fields are missing", () => {});
+    describe("Fields are missing", () => {
+        it("should return 400 status code if email field is missing", async () => {
+            // Arrange
+            const userData = {
+                firstName: "Nur",
+                lastName: "Adnan",
+                email: "",
+                password: "secret",
+            };
+
+            // Act
+            const response = await request(app)
+                .post("/auth/register")
+                .send(userData);
+
+            // Assert
+            expect(response.statusCode).toBe(400);
+            const userRepository = connection.getRepository(User);
+            const users = await userRepository.find();
+            expect(users).toHaveLength(0);
+        });
+    });
 });
